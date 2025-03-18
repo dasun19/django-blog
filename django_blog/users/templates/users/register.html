@@ -1,0 +1,16 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Register - BlogIt{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Register</h2>
+        <p>Please fill in this form to create an account.</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn btn-primary">Register</button>
+            <p>Already have an account? <a href="{% url 'login'%}" class ="abtn">Login</a> </p>
+        </form>
+    </div>
+{% endblock %}

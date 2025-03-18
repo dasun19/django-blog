@@ -1,0 +1,17 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}Delete Post - BlogIt{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>Delete Post</h2>
+        <p>Please confirm to delete post <b>{{ object.title }}</b>.</p>
+        <form method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" class="btn-primary">Confirm Delete</button>
+        </form>
+        <br>
+        <p>I don't want to delete? <a href="{% url 'home' %}" class="abtn">Go Back</a></p>
+    </div>
+{% endblock %}

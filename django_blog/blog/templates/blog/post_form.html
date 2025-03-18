@@ -1,0 +1,30 @@
+{% extends 'blog/base.html' %}
+
+{% block title %}New Post - BlogIt{% endblock %}
+
+{% block content %}
+    <div class="form-container">
+        <h2>New Post</h2>
+        <form method="post">
+            {% csrf_token %}
+            <div class="form-group">
+                {{ form.title.label_tag }}
+                {{ form.title }}
+            </div>
+            <div class="form-group">
+                {{ form.content.label_tag }}
+                {{ form.content }}
+            </div>
+
+            <div class="form-group">
+                {{ form.category.label_tag }}
+                {{ form.category }}
+            </div>
+            <div class="form-group">
+                {{ form.tags.label_tag }}
+                {{ form.tags }}
+            </div>
+            <button type="submit" class="btn-primary">Post</button>
+        </form>
+    </div>
+{% endblock %}
