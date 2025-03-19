@@ -1,5 +1,10 @@
 #!/usr/bin/env python
 """Django's command-line utility for administrative tasks."""
+
+""" Index_No: 20APP5021
+    Name: P.L.D.K.Cooray
+    Github Repository: https://github.com/dasun19/django-blog.git """
+
 import os
 import sys
 
