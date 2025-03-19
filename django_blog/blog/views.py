@@ -8,7 +8,7 @@ from django.urls import reverse_lazy
 from django import forms
 from django.shortcuts import get_object_or_404, redirect
 from django.contrib import messages
-from .forms import SearchForm, CommentForm, ReplyForm
+from .forms import SearchForm, CommentForm, ReplyForm, PostForm
 
 # Create your views here.
 
@@ -85,9 +85,20 @@ class PostDetailView(DetailView):
                 return redirect('blog-detail', pk=self.object.pk)
         return self.get(request, *args, **kwargs)
 
+# class PostCreateView(LoginRequiredMixin, CreateView):
+#     model = Post
+#     fields = ['title', 'content', 'image', 'category', 'tags']
+#     template_name = 'blog/post_form.html'
+#     login_url = reverse_lazy('login')  # Redirects to the login URL if not authenticated
+
+#     def get_form(self):
+#         form = super().get_form()
+#         form.fields['title'].widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title here'})
+#         form.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Write your content here...'})
+
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
-    fields = ['title', 'content', 'category', 'tags']
+    fields = ['title', 'content', 'image', 'category', 'tags']  # Ensure 'image' is included
     template_name = 'blog/post_form.html'
     login_url = reverse_lazy('login')  # Redirects to the login URL if not authenticated
 
@@ -95,6 +106,7 @@ class PostCreateView(LoginRequiredMixin, CreateView):
         form = super().get_form()
         form.fields['title'].widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter title here'})
         form.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Write your content here...'})
+        form.fields['image'].widget = forms.ClearableFileInput(attrs={'class': 'form-control'})  # Add styling for the image field
         return form
 
     def form_valid(self, form):
@@ -104,10 +116,18 @@ class PostCreateView(LoginRequiredMixin, CreateView):
     def get_success_url(self):
         return reverse('blog-detail', kwargs={'pk': self.object.pk})
 
+
 class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Post
-    fields = ['title', 'content', 'category', 'tags']
+    fields = ['title', 'content', 'image', 'category', 'tags']  # Ensure 'image' is included
     login_url = reverse_lazy('login')
+
+    def get_form(self):
+        form = super().get_form()
+        form.fields['title'].widget = forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Update title here'})
+        form.fields['content'].widget = forms.Textarea(attrs={'class': 'form-control', 'rows': 10, 'placeholder': 'Update your content here...'})
+        form.fields['image'].widget = forms.ClearableFileInput(attrs={'class': 'form-control'})  # Add styling for the image field
+        return form
 
     def form_valid(self, form):
         form.instance.author = self.request.user
@@ -118,15 +138,45 @@ class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def test_func(self):
         post = self.get_object()
-
         if self.request.user == post.author:
             return True
-
         return False
 
     def handle_no_permission(self):
         messages.error(self.request, 'You are not authorized to update this post.')
         return redirect('home')
+        return form
+
+    # def form_valid(self, form):
+    #     form.instance.author = self.request.user
+    #     return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse('blog-detail', kwargs={'pk': self.object.pk})
+
+# class PostUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+#     model = Post
+#     fields = ['title', 'content', 'image', 'category', 'tags']
+#     login_url = reverse_lazy('login')
+
+#     def form_valid(self, form):
+#         form.instance.author = self.request.user
+#         return super().form_valid(form)
+
+#     def get_success_url(self):
+#         return reverse('blog-detail', kwargs={'pk': self.object.pk})
+
+#     def test_func(self):
+#         post = self.get_object()
+
+#         if self.request.user == post.author:
+#             return True
+
+#         return False
+
+#     def handle_no_permission(self):
+#         messages.error(self.request, 'You are not authorized to update this post.')
+#         return redirect('home')
 
 class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Post

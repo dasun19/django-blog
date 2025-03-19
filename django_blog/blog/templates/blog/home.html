@@ -33,6 +33,11 @@
         <div class="post-card">
             <h3 class="post-title">{{ post.title }}</h3>
             <p class="post-meta">Published on {{ post.date_posted|date:"F j, Y, g:i a" }} by {{ post.author }}</p>
+            {% if post.image %}
+                 <img class="image" src="{{ post.image.url }}" alt="{{ post.title }}" style="max-width: 50%; height: auto;">
+            {% endif %}
+        
+           
             <div class="post-content">
                 {{ post.content|truncatewords:30 }}
             </div>

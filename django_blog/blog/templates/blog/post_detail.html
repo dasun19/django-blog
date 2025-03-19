@@ -5,11 +5,19 @@
     <div class="container">
         <div class="post-card">
             <h2 class="post-title">{{ object.title }}</h2>
+
             <p class="post-meta">Published on {{ object.date_posted|date:"F j, Y, g:i a" }} by {{ object.author }}</p>
+
+            {% if object.image %}
+                 <img class="image" src="{{ object.image.url }}" alt="{{ object.title }}" style="max-width: 75%; height: auto;">
+            {% endif %}
+
             <div class="post-content">
                 {{ object.content|linebreaks }}
             </div>
+
             <p>Category: {{ object.category.name }}</p>
+
             <p>Tags:
             {% if object.tags.exists %}
                 {% for tag in object.tags.all %}
@@ -19,6 +27,7 @@
                 <span class="no-tags">No tags available</span>
             {% endif %}
             </p>
+
             <a href="{% url 'home' %}" class="abtn">Back to Home</a>
             {% if user == object.author %}
                 <a href="{% url 'blog-update' pk=object.pk %}" class="write-btn">Update</a>
